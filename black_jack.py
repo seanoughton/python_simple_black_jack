@@ -9,14 +9,55 @@ class Card:
         self.face = face
 
 class Hand:
-    def __init__(self,cards=[]):
-        self.cards = cards
+    def __init__(self):
+        self.cards = []
 
-    def busted():
-        pass
+    def has_ace(self):
+        for card in self.cards:
+          if card.face == 'Ace':
+              return True
+        return False
+
+    def iterate_through_cards(self):
+        total = [0,0]
+        for card in self.cards:
+          if card.face == 'Ace':
+            x,y = card.value
+            total[0] += (x + total[1])
+            total[1] += y
+          else:
+            total[1] += card.value
+        return total
+
+    def total(self):
+        total = self.iterate_through_cards()
+        if self.has_ace() == False:
+            return total[1]
+        else:
+            #IF THE 11 OPTION IS BUSTED RETURN THE 1 OPTION
+            if total[1] > 21:
+              return total[0]
+            #IF THE 11 OPTION IS NOT BUSTED RETURN THE 11 OPTION
+            if total[1] <= 21:
+                return total[1]
+
+
+
+    def busted(self):
+        if self.total() > 21:
+            return True
+        else:
+            return False
+
+    def __del__(self):
+        self.cards = []
+
+
+
+
 
 class Deck:
-    def __init__(self,):
+    def __init__(self):
         self.cards = []
 
     def add_cards(self):

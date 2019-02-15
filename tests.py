@@ -24,9 +24,15 @@ class TestGame(unittest.TestCase):
         self.assertEqual(len(result),52)
         del deck
 
+    def test_deck_shuffled(self):
+        deck = Deck()
+        deck.add_cards()
+        first_suit = deck.cards[0]
+        second_suit = deck.cards[14]
+        #NEED A BETTER SOLUTION FOR THIS BECAUSE RANDOMLY THESE VALUES WILL BE THE SAME
+        self.assertNotEqual(first_suit.value,second_suit.value)
+        del deck
 
-    #deck is shuffled
-    #deck can deal cards to a player
 
 #CHIP TESTS
     def test_create_chip(self):
@@ -40,8 +46,39 @@ class TestGame(unittest.TestCase):
         hand = Hand()
         result = black_jack.Hand()
         self.assertEqual(type(result),type(hand))
-        hand = {}
+        del hand
+
+    def test_has_ace(self):
+        hand = Hand()
+        card = Card(suit='Clubs',value=(1,11),face='Ace')
+        hand.cards.append(card)
+        self.assertEqual(hand.has_ace(),True)
+        del hand
+        del card
+
+    #hand returns total
+    def test_hand_total(self):
+        hand = Hand()
+        card = Card(suit='Hearts',value=10,face='Jack')
+        hand.cards.append(card)
+        hand.cards.append(card)
+        hand.cards.append(card)
+        self.assertEqual(hand.total(),30)
+        del hand
+        del card
+
+
     #hand busted
+    def test_hand_busted(self):
+        hand = Hand()
+        card = Card(suit='Hearts',value=10,face='Jack')
+        hand.cards.append(card)
+        hand.cards.append(card)
+        hand.cards.append(card)
+        self.assertEqual(hand.busted(),True)
+        del hand
+        del card
+
     #hand is black jack
 
 #GAME TESTS
@@ -63,6 +100,8 @@ class TestGame(unittest.TestCase):
         dealer_test = black_jack.Dealer()
         self.assertEqual(type(dealer_test),type(dealer))
         del dealer,dealer_test
+
+    #dealer can deal cards to a player
 
 #VIEW TESTS
     def test_create_view(self):
