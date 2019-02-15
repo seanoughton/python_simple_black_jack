@@ -149,6 +149,20 @@ class TestGame(unittest.TestCase):
         del player, player_test
 
     #player can bet
+    def test_bet_approved(self):
+        player = Player()
+        player.create_bank(100,25)
+        bet = player.bet(100)
+        self.assertEqual(bet,100)
+        del player
+
+    def test_bet_refused(self):
+        player = Player()
+        player.create_bank(2,25)
+        print(player.bank.show_bank())
+        self.assertEqual(player.bet(1000),False)
+        del player
+
 
 #DEALER TESTS
     def test_create_dealer(self):

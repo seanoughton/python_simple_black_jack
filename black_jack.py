@@ -131,8 +131,14 @@ class Player:
     def create_bank(self,num,value):
         self.bank.add_chips(num,value)
 
-    def bet(self):
-        pass
+    def bet(self,value):
+        #check to make sure that the player has enough in the bank to make the bet
+        #if so, return the value
+        #else, return an error message
+        if value <= self.bank.show_bank():
+            return value
+        else:
+            return False
 
 
 
