@@ -96,30 +96,49 @@ class Chip:
     def __init__(self,value):
         self.value = value
 
+class Bank:
+    def __init__(self):
+        self.chips = []
+
+    def add_chips(self,num,value):
+        for i in range(0,num):
+            chip = Chip(value)
+            self.chips.append(chip)
+
+    def subtract_chips(self,num,value):
+        for i in range(0,num):
+            self.chips.pop()
+
+
+    def show_bank(self):
+        amount = 0
+        for chip in self.chips:
+            amount += chip.value
+        return amount
+
+
+    def __del__(self):
+        self.chips = []
+
+
 class Player:
     def __init__(self):
         self.chips = []
         self.hand = {}
         self.name = 'Player'
+        self.bank = Bank()
 
-    def bet():
+    def create_bank(self,num,value):
+        self.bank.add_chips(num,value)
+
+    def bet(self):
         pass
 
-    def hit():
-        pass
 
-    def return_bank():
-        return self.chips * 25
-
-    def add_chips(num):
-        pass
-
-    def remove_chips(num):
-        pass
 
     def __del__(self):
-        self.chips = []
         self.hand = {}
+        self.bank = {}
 
 class Dealer:
     def __init__(self):

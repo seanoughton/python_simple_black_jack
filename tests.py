@@ -99,12 +99,56 @@ class TestGame(unittest.TestCase):
         self.assertEqual(type(game.deck.cards),type([]))
         del game
 
+
+#BANK TESTS
+    #player can create_bank
+    def test_add_chips(self):
+        player = Player()
+        num_chips = 100
+        value = 25
+        player.create_bank(num_chips,value)
+        self.assertEqual(len(player.bank.chips),100)
+        del player
+
+
+    #player shows bank
+    def test_show_bank(self):
+        player = Player()
+        num_chips = 100
+        value = 25
+        player.create_bank(num_chips,value)
+        self.assertEqual(player.bank.show_bank(),2500)
+        del player
+
+    #player bank can add chips
+    def test_add_to_bank(self):
+        player = Player()
+        num_chips = 10
+        value = 25
+        player.bank.add_chips(num_chips,value)
+        self.assertEqual(player.bank.show_bank(),250)
+        del player
+
+    #player bank can subtract chips
+    def test_subtract_from_bank(self):
+        player = Player()
+        num_chips = 10
+        value = 25
+        player.bank.add_chips(num_chips,value)
+        num_chips = 2
+        value = 25
+        player.bank.subtract_chips(num_chips,value)
+        self.assertEqual(player.bank.show_bank(),200)
+        del player
+
 #PLAYER TESTS
     def test_create_player(self):
         player = Player()
         player_test = black_jack.Player()
         self.assertEqual(type(player_test),type(player))
         del player, player_test
+
+    #player can bet
 
 #DEALER TESTS
     def test_create_dealer(self):
