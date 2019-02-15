@@ -33,6 +33,12 @@ class TestGame(unittest.TestCase):
         self.assertNotEqual(first_suit.value,second_suit.value)
         del deck
 
+    def test_get_cards(self):
+        deck = Deck()
+        deck.add_cards()
+        self.assertIsInstance((deck.get_cards(2)[0]),Card)
+        del deck
+
 
 #CHIP TESTS
     def test_create_chip(self):
@@ -172,6 +178,16 @@ class TestGame(unittest.TestCase):
         del dealer,dealer_test
 
     #dealer can deal cards to a player
+    def test_deal_cards(self):
+        dealer = Dealer()
+        deck = Deck()
+        deck.add_cards()
+        cards = dealer.deal_cards(2,deck)
+        self.assertIsInstance(cards[0],Card)
+        del dealer
+
+
+
 
 #VIEW TESTS
     def test_create_view(self):

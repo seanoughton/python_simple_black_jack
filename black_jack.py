@@ -80,10 +80,11 @@ class Deck:
             self.cards.append(card)
         random.shuffle(self.cards)
 
-
-
-    def deal_cards(self):
-        pass
+    def get_cards(self,num):
+        cards = []
+        for i in range(0,num):
+            cards.append(self.cards.pop())
+        return cards
 
     def clear_deck(self):
         self.cards = []
@@ -151,8 +152,8 @@ class Dealer:
         self.hand = {}
         self.name = 'Dealer'
 
-    def hit():
-        pass
+    def deal_cards(self,num,deck):
+        return deck.get_cards(2)
 
     def __del__(self):
         self.hand = {}
