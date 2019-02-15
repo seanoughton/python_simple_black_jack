@@ -42,9 +42,14 @@ class Hand:
                 return total[1]
 
 
-
     def busted(self):
         if self.total() > 21:
+            return True
+        else:
+            return False
+
+    def black_jack(self):
+        if self.total() == 21:
             return True
         else:
             return False

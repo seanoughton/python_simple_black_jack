@@ -80,6 +80,18 @@ class TestGame(unittest.TestCase):
         del card
 
     #hand is black jack
+    def test_hand_black_jack(self):
+        hand = Hand()
+        jack = Card(suit='Hearts',value=10,face='Jack')
+        nine = Card(suit='Hearts',value=9,face='9')
+        two = Card(suit='Hearts',value=2,face='2')
+        ace = Card(suit='Hearts',value=(1,11),face='Ace')
+        hand.cards.append(jack)
+        hand.cards.append(ace)
+        # hand.cards.append(two)
+        self.assertEqual(hand.black_jack(),True)
+        del hand
+
 
 #GAME TESTS
     def test_create_game(self):
