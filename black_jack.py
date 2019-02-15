@@ -1,3 +1,7 @@
+import random
+import os
+clear = lambda: os.system('clear')
+
 class Card:
     def __init__(self,suit="Hearts",value=2,face='2'):
         self.suit = suit
@@ -12,14 +16,35 @@ class Hand:
         pass
 
 class Deck:
-    def __init__(self,cards=[]):
-        self.cards = cards
+    def __init__(self,):
+        self.cards = []
 
-    def create_deck():
+    def add_cards(self):
+        suits = ['Spades','Hearts','Diamonds','Clubs']
+        face_cards = ['Jack','Queen','King','Ace']
+        for suit in suits:
+          for i in range(2,11):
+            card = Card(suit=suit,value=i,face=i)
+            self.cards.append(card)
+          for card in face_cards:
+            if card == 'Ace':
+              card = Card(suit=suit,value=(1,11),face=card)
+            else:
+              card = Card(suit=suit,value=10,face=card)
+            self.cards.append(card)
+        random.shuffle(self.cards)
+
+
+
+    def deal_cards(self):
         pass
 
-    def deal_cards():
-        pass
+    def clear_deck(self):
+        self.cards = []
+
+    def __del__(self):
+        self.cards = []
+
 
 class Chip:
     def __init__(self,value):
@@ -46,6 +71,10 @@ class Player:
     def remove_chips(num):
         pass
 
+    def __del__(self):
+        self.chips = []
+        self.hand = {}
+
 class Dealer:
     def __init__(self):
         self.hand = {}
@@ -54,22 +83,31 @@ class Dealer:
     def hit():
         pass
 
+    def __del__(self):
+        self.hand = {}
+
 
 class Game:
     def __init__(self):
-        self.deck = []
+        self.deck = Deck()
         self.player = {}
         self.dealer = {}
+
+        self.deck.add_cards()
 
     def won_test():
         pass
 
+    def __del__(self):
+        self.deck = {}
 
 class Controller:
     def __init__(self):
         self.game = Game()
         self.player = Player()
         self.dealer = Dealer()
+
+
 
     def init_game():
         pass
@@ -82,6 +120,11 @@ class Controller:
     def check_won():
         pass
 
+    def __del__(self):
+        self.game = {}
+        self.player = {}
+        self.dealer = {}
+
 
 
 class View:
@@ -92,6 +135,9 @@ class View:
         pass
 
     def display_game_won():
+        pass
+
+    def __del__(self):
         pass
 
 
