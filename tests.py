@@ -24,19 +24,19 @@ class TestGame(unittest.TestCase):
         self.assertEqual(len(result),52)
         del deck
 
-    def test_deck_shuffled(self):
-        deck = Deck()
-        deck.add_cards()
-        first_suit = deck.cards[0]
-        second_suit = deck.cards[14]
-        #NEED A BETTER SOLUTION FOR THIS BECAUSE RANDOMLY THESE VALUES WILL BE THE SAME
-        self.assertNotEqual(first_suit.value,second_suit.value)
-        del deck
+    # def test_deck_shuffled(self):
+    #     deck = Deck()
+    #     deck.add_cards()
+    #     first_suit = deck.cards[0]
+    #     second_suit = deck.cards[14]
+    #     #NEED A BETTER SOLUTION FOR THIS BECAUSE RANDOMLY THESE VALUES WILL BE THE SAME
+    #     self.assertNotEqual(first_suit.value,second_suit.value)
+    #     del deck
 
-    def test_get_cards(self):
+    def test_cards_out(self):
         deck = Deck()
         deck.add_cards()
-        self.assertIsInstance((deck.get_cards(2)[0]),Card)
+        self.assertIsInstance((deck.cards_out(2)[0]),Card)
         del deck
 
 
@@ -102,8 +102,10 @@ class TestGame(unittest.TestCase):
 #GAME TESTS
     def test_create_game(self):
         game = Game()
-        self.assertEqual(type(game.deck.cards),type([]))
+        self.assertEqual(len(game.deck.cards),52)
         del game
+
+
 
 
 #BANK TESTS
@@ -154,7 +156,6 @@ class TestGame(unittest.TestCase):
         self.assertEqual(type(player_test),type(player))
         del player, player_test
 
-    #player can bet
     def test_bet_approved(self):
         player = Player()
         player.create_bank(100,25)
@@ -165,7 +166,6 @@ class TestGame(unittest.TestCase):
     def test_bet_refused(self):
         player = Player()
         player.create_bank(2,25)
-        print(player.bank.show_bank())
         self.assertEqual(player.bet(1000),False)
         del player
 
@@ -177,7 +177,6 @@ class TestGame(unittest.TestCase):
         self.assertEqual(type(dealer_test),type(dealer))
         del dealer,dealer_test
 
-    #dealer can deal cards to a player
     def test_deal_cards(self):
         dealer = Dealer()
         deck = Deck()
@@ -186,19 +185,15 @@ class TestGame(unittest.TestCase):
         self.assertIsInstance(cards[0],Card)
         del dealer
 
-
-
-
-#VIEW TESTS
-    def test_create_view(self):
-        view = View()
-        view_test = black_jack.View()
-        self.assertEqual(type(view_test),type(view))
-        del view,view_test
-
-    # view can display the players hand: display_hand(hand,player)
-    # view can display the dealers hand: display_hand(hand,dealer)
-    # view can display won the game information: display_game_won(game,player,dealer)
+    def test_player_recieves_dealt_cards(self):
+        dealer = Dealer()
+        deck = Deck()
+        deck.add_cards()
+        cards = dealer.deal_cards(2,deck)
+        player = Player()
+        player.hand.cards += cards
+        self.assertEqual(len(player.hand.cards),2)
+        del dealer
 
 #CONTROLLER TESTS
     def test_create_controller(self):
@@ -208,10 +203,58 @@ class TestGame(unittest.TestCase):
         del controller,controller_test
 
     # controller has game,player,dealer
-    # controller can initialize a game :init_game()
-    # controller initializes the player's play :player_play()
+    def test_has_game_player_dealer_view(self):
+        controller = Controller()
+        self.assertIsInstance(controller.game,Game)
+        self.assertEqual(controller.player.name,'Player')
+        self.assertIsInstance(controller.dealer,Dealer)
+        self.assertIsInstance(controller.view,View)
+        del controller
+
+
+    def test_has_game_player_dealer_deck(self):
+        controller = Controller()
+        self.assertIsInstance(controller.game,Game)
+        del controller
+
+        # controller can initialize a game :init_game()
+
+    # def test_game_init_has_bank_(self):
+    #     controller = Controller()
+    #     controller.init_game()
+    #     self.assertEqual(controller.player.bank.show_bank(),2500)
+    #     del controller
+    #
+    # def test_game_init_player_bet(self):
+    #     controller = Controller()
+    #     controller.init_game()
+    #     self.assertEqual(controller.game.bet,100)
+    #     del controller
+    #
+    # def test_game_init_deal_cards(self):
+    #     controller = Controller()
+    #     controller.init_game()
+    #     self.assertEqual(len(controller.player.hand.cards),2)
+    #     self.assertEqual(len(controller.dealer.hand.cards),2)
+    #     del controller
+    #
+
+
+# controller initializes the player's play :player_play()
+    # def test_game_player_play(self):
+    #     controller = Controller()
+    #     controller.init_game()
+    #     #HIT 1 TIMES
+    #     self.assertEqual(len(controller.player.hand.cards),2)
+    #     del controller
+
+
     # controller initializes the dealers's play :dealer_play()
-    # controller initializes hand logic if hand is busted :check_bust()
+    def test_game_dealer_play(self):
+        controller = Controller()
+        controller.init_game()
+        self.assertGreater(controller.dealer.hand.total(),20)
+        del controller
     # controller initializes game logic if game is won: check_won()
 
     #controller GIVES PLAYER CHIPS
@@ -224,6 +267,65 @@ class TestGame(unittest.TestCase):
     #controller SHOW CARDS AND FINAL SCORE
     #controller ADJUST PLAYERS BANK (ADD OR REMOVE CHIPS)
     #controller ASK IF THE PLAYER WANTS TO PLAY AGAIN
+
+#VIEW TESTS
+    def test_create_view(self):
+        view = View()
+        view_test = black_jack.View()
+        self.assertEqual(type(view_test),type(view))
+        del view,view_test
+
+    # def test_display_hand_player(self):
+    #     view = View()
+    #     dealer = Dealer()
+    #     deck = Deck()
+    #     deck.add_cards()
+    #     cards = dealer.deal_cards(2,deck)
+    #     player = Player()
+    #     player.hand.add_cards(cards)
+    #     response = f'Your hand is: \n'
+    #     for card in player.hand.cards:
+    #         response += f" {card.face} of {card.suit}\n"
+    #     self.assertEqual(view.display_hand(player),response)
+    #     del view,dealer,deck,cards,player,response
+
+    # def test_display_hand_dealer(self):
+    #     view = View()
+    #     dealer = Dealer()
+    #     deck = Deck()
+    #     deck.add_cards()
+    #     cards = dealer.deal_cards(2,deck)
+    #     dealer.hand.add_cards(cards)
+    #     response = f"The Dealer's: \n"
+    #     for card in dealer.hand.cards:
+    #         response += f" {card.face} of {card.suit}\n"
+    #     self.assertEqual(view.display_hand(dealer),response)
+    #     del view,dealer,deck,cards,response
+
+    # def test_display_player_hit(self):
+    #     view = View()
+    #     player = Player()
+    #     dealer = Dealer()
+    #     deck = Deck()
+    #     deck.add_cards()
+    #     cards = dealer.deal_cards(2,deck)
+    #     player.hand.add_cards(cards)
+    #     self.assertEqual(view.hit(),True)
+    #     del view,player,dealer,deck,cards
+
+    # def test_display_busted(self):
+    #     view = View()
+    #     self.assertEqual(view.display_busted(),'You Busted!')
+    #     del view
+
+    # def test_display_bank(self):
+    #     view = View()
+    #     player = Player()
+    #     player.create_bank(100,25)
+    #     self.assertEqual(view.display_bank(player),f'Your Bank is: {player.bank.show_bank()}')
+    #     del view,player
+
+
 
 
 

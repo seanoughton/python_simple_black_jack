@@ -12,6 +12,9 @@ class Hand:
     def __init__(self):
         self.cards = []
 
+    def add_cards(self,new_cards):
+        self.cards += new_cards
+
     def has_ace(self):
         for card in self.cards:
           if card.face == 'Ace':
@@ -80,7 +83,7 @@ class Deck:
             self.cards.append(card)
         random.shuffle(self.cards)
 
-    def get_cards(self,num):
+    def cards_out(self,num):
         cards = []
         for i in range(0,num):
             cards.append(self.cards.pop())
@@ -125,7 +128,7 @@ class Bank:
 class Player:
     def __init__(self):
         self.chips = []
-        self.hand = {}
+        self.hand = Hand()
         self.name = 'Player'
         self.bank = Bank()
 
@@ -149,53 +152,111 @@ class Player:
 
 class Dealer:
     def __init__(self):
-        self.hand = {}
+        self.hand = Hand()
         self.name = 'Dealer'
 
     def deal_cards(self,num,deck):
-        return deck.get_cards(2)
+        return deck.cards_out(num)
 
     def __del__(self):
-        self.hand = {}
+        self.hand = Hand()
 
 
 class Game:
     def __init__(self):
         self.deck = Deck()
-        self.player = {}
-        self.dealer = {}
-
+        self.player = Player()
+        self.dealer = Dealer()
+        self.bet = 0
         self.deck.add_cards()
 
     def won_test():
         pass
 
     def __del__(self):
-        self.deck = {}
+        self.deck = Deck()
 
 class Controller:
     def __init__(self):
         self.game = Game()
         self.player = Player()
         self.dealer = Dealer()
+        self.view = View()
 
 
 
-    def init_game():
-        pass
-    def player_play():
-        pass
-    def dealer_play():
-        pass
-    def check_bust():
-        pass
-    def check_won():
-        pass
+    def init_game(self):
+        #add money to the players bank
+        self.player.create_bank(100,25)
+
+
+
+        # ASK THE PLAYER TO BET AND VALIDATE THE BET AMOUNT
+        value = self.view.place_bet()
+        while self.player.bet(value) == False:
+            value = self.view.place_bet()
+        else:
+            self.game.bet = value
+
+        #DEAL CARDS
+        player_cards = self.dealer.deal_cards(2,self.game.deck)
+        self.player.hand.add_cards(player_cards)
+
+        dealer_cards = self.dealer.deal_cards(2,self.game.deck)
+        self.dealer.hand.add_cards(dealer_cards)
+
+        #show cards (player all, dealer one)
+        print(self.view.display_bank(self.player))
+        print(self.view.display_hand(self.player))
+        print(self.view.display_hand(self.dealer))
+
+        self.player_play()
+        self.dealer_play()
+        self.check_won()
+
+
+
+    def player_play(self):
+        response = True
+        while response == True:
+            response = self.view.hit()
+            if response == True:
+                player_cards = self.dealer.deal_cards(1,self.game.deck)
+                self.player.hand.add_cards(player_cards)
+            if self.player.hand.busted() == True:
+                self.view.display_busted()
+                break
+            if self.player.hand.black_jack() == True:
+                self.view.display_game_over(self.player,self.dealer)
+                break
+
+    def dealer_play(self):
+        while self.dealer.hand.total() < 21:
+            dealer_card = self.dealer.deal_cards(1,self.game.deck)
+            self.dealer.hand.add_cards(dealer_card)
+            if self.dealer.hand.busted() == True:
+                self.view.display_busted(self.dealer)
+                break
+            if self.dealer.hand.black_jack() == True:
+                self.view.display_game_over(self.player,self.dealer)
+                break
+
+    def check_won(self):
+        winner = {}
+        if self.player.hand.total() > self.dealer.hand.total():
+            winner = self.player
+            num = self.bet/25
+            self.player.bank.add_chips(num,25)
+        else:
+            winner = self.dealer
+        self.view.display_game_over(winner,self.player,self.dealer)
+
+
 
     def __del__(self):
-        self.game = {}
-        self.player = {}
-        self.dealer = {}
+        self.game = Game()
+        self.player = Player()
+        self.dealer = Dealer()
 
 
 
@@ -203,11 +264,44 @@ class View:
     def __init__(self):
         self.name = 'View'
 
-    def display_hand():
-        pass
+    def display_bank(self,player):
+        return f'Your Bank is: {player.bank.show_bank()}'
 
-    def display_game_won():
-        pass
+    def place_bet(self):
+        #ADD ERROR CHECKING FOR IF THEY ENTER SOMETHING OTHER THAN A NUMBER
+        return int(input("Place your bet"))
+
+    def display_hand(self,player):
+        if player.name == 'Player':
+            response = f'Your hand is: \n'
+            for card in player.hand.cards:
+                response += f" {card.face} of {card.suit}\n"
+        else:
+            response = f"The Dealer's: \n"
+            for card in player.hand.cards:
+                response += f" {card.face} of {card.suit}\n"
+
+        return response
+
+    def display_busted(self,game_player):
+        if game_player.name == "Player":
+            return 'You Busted!'
+        else:
+            return 'Dealer Busted'
+
+    def hit(self):
+        response = ''
+        while response not in ['H','h','S','s']:
+          response = input('Would you like to hit or stay?(H/S)\n')
+        if response == 'H' or response =='h':
+          return True
+        else:
+          return False
+
+    def display_game_over(self,winner,player,dealer):
+        return f'{winner.name} is the Winner!\n Your bank is now {self.display_bank(player)}'
+
+
 
     def __del__(self):
         pass
