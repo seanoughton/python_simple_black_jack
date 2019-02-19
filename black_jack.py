@@ -272,6 +272,7 @@ class Controller:
     def init_game(self):
         clear()
         #PLAYER SETUP
+        self.game = Game()
         self.player.hand.clear()
         self.dealer.hand.clear()
         self.view.display_bank(self.player)
@@ -294,14 +295,26 @@ class Controller:
         if self.game.over == False:
             self.game.dealer_play(view=self.view,player=self.player,dealer=self.dealer)
 
-        while self.play == True:
-            response = input('Would you like to play again?(Y/N)\n')
-            while response not in ['Y','y','S','s']:
-              response = input('Would you like to play again?(Y/N)\n')
-            if response == 'Y' or response =='y':
-              self.init_game()
-            else:
-              break
+
+        self.play_again()
+
+
+    def play_again(self):
+        response = self.get_input()
+        if response == 'Y' or response =='y':
+            self.init_game()
+        if response == 'N' or response =='n':
+            print('GoodBye!')
+            return
+
+    def get_input(self):
+        response = ''
+        while response not in ['Y','y','N','n']:
+          response = input('Would you like to play again?(Y/N)\n')
+        return response
+
+
+
 
 
     def __del__(self):
