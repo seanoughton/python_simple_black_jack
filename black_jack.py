@@ -15,23 +15,44 @@ class Hand:
     def add_cards(self,new_cards):
         self.cards += new_cards
 
+    def card_is_ace(self,card):
+        return card.face == 'Ace'
+
     def has_ace(self):
         for card in self.cards:
-          if card.face == 'Ace':
+          if self.card_is_ace(card) == True:
               return True
         return False
+
+
+    def add_card_total(self,card,total):
+        if self.card_is_ace(card) == True:
+          x,y = card.value
+          total[0] += x
+          total[1] += y
+        else:
+          total[0] += card.value
+          total[1] += card.value
+        return total
 
     def iterate_through_cards(self):
         total = [0,0]
         for card in self.cards:
-          if card.face == 'Ace':
-            x,y = card.value
-            total[0] += x
-            total[1] += y
-          else:
-            total[0] += card.value
-            total[1] += card.value
+          total = self.add_card_total(card,total)
         return total
+
+
+    # def iterate_through_cards(self):
+    #     total = [0,0]
+    #     for card in self.cards:
+    #       if self.card_is_ace(card) == True:
+    #         x,y = card.value
+    #         total[0] += x
+    #         total[1] += y
+    #       else:
+    #         total[0] += card.value
+    #         total[1] += card.value
+    #     return total
 
     def total(self):
         total = self.iterate_through_cards()
@@ -48,19 +69,12 @@ class Hand:
     def clear(self):
         self.cards = []
 
-
-
     def busted(self):
-        if self.total() > 21:
-            return True
-        else:
-            return False
+        return self.total() > 21
 
     def black_jack(self):
-        if self.total() == 21:
-            return True
-        else:
-            return False
+        return self.total() == 21
+
 
     def __del__(self):
         self.cards = []

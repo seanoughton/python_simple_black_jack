@@ -20,7 +20,7 @@ class TestGame(unittest.TestCase):
         player.hand.cards.append(card3)
         # dealer.hand.cards.append(card1)
         # dealer.hand.cards.append(card3)
-        self.assertEqual(player.hand.busted(),True)
+        self.assertEqual(player.hand.busted(),False)
 
 
 
