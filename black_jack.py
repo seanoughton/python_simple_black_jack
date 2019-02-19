@@ -26,12 +26,11 @@ class Hand:
         for card in self.cards:
           if card.face == 'Ace':
             x,y = card.value
-            total[0] += x 
+            total[0] += x
             total[1] += y
           else:
             total[0] += card.value
             total[1] += card.value
-          print(total)
         return total
 
     def total(self):
@@ -46,6 +45,8 @@ class Hand:
               return total[1]
             #IF THE 11 OPTION IS NOT BUSTED RETURN THE 11 OPTION
 
+    def clear(self):
+        self.cards = []
 
 
 
@@ -144,6 +145,7 @@ class Player:
         self.hand = Hand()
         self.name = 'Player'
         self.bank = Bank()
+        self.black_jack = False
 
     def create_bank(self,num):
         # self.bank.add_chips(num,value)
@@ -170,6 +172,7 @@ class Dealer:
     def __init__(self):
         self.hand = Hand()
         self.name = 'Dealer'
+        self.black_jack = False
 
     def deal_cards(self,num,deck):
         return deck.cards_out(num)
@@ -196,10 +199,11 @@ class Game:
         while response == True:
             player_cards = dealer.deal_cards(1,self.deck)
             player.hand.add_cards(player_cards)
-            view.display_hand(player)
 
             if self.game_over(view,player,dealer) == True:
                 break
+            else:
+                view.display_hand(player)
 
             response = view.hit()
 
@@ -222,6 +226,7 @@ class Game:
                 response = True
             if player.hand.black_jack() == True:
                 self.winner = player
+                player.black_jack = True
                 response =  True
 
         if self.turn == "Dealer":
@@ -230,6 +235,7 @@ class Game:
                 response = True
             elif dealer.hand.black_jack() == True:
                 self.winner = dealer
+                dealer.black_jack = True
                 response = True
             elif player.hand.total() < dealer.hand.total():
                 self.winner = dealer
@@ -258,12 +264,16 @@ class Controller:
         self.player = Player()
         self.dealer = Dealer()
         self.view = View()
+        self.play = True
+
+        self.player.create_bank(2500)
 
 
     def init_game(self):
         clear()
         #PLAYER SETUP
-        self.player.create_bank(2500)
+        self.player.hand.clear()
+        self.dealer.hand.clear()
         self.view.display_bank(self.player)
         self.game.bet = self.player.bet(view=self.view)
 
@@ -284,7 +294,14 @@ class Controller:
         if self.game.over == False:
             self.game.dealer_play(view=self.view,player=self.player,dealer=self.dealer)
 
-
+        while self.play == True:
+            response = input('Would you like to play again?(Y/N)\n')
+            while response not in ['Y','y','S','s']:
+              response = input('Would you like to play again?(Y/N)\n')
+            if response == 'Y' or response =='y':
+              self.init_game()
+            else:
+              break
 
 
     def __del__(self):
@@ -335,8 +352,10 @@ class View:
     def display_game_over(self,winner,player,dealer):
         clear()
         print(f'{winner.name} is the Winner!\n')
-        print(f'The Dealers Hand is: {self.display_hand(dealer)}')
-        print(f'Your Hand is: {self.display_hand(player)}')
+        if player.black_jack == True or dealer.black_jack == True:
+            print('BLACK JACK!!!')
+        self.display_hand(dealer)
+        self.display_hand(player)
         print(f'Your bank is now {self.display_bank(player)}')
 
 
@@ -347,5 +366,5 @@ class View:
 
 
 
-# controller = Controller()
-# controller.init_game()
+controller = Controller()
+controller.init_game()
