@@ -363,6 +363,11 @@ class View:
 
     def display_game_over(self,winner,player,dealer):
         clear()
+        if player.hand.busted() == True:
+            self.display_busted(player)
+        if dealer.hand.busted() == True:
+            self.display_busted(dealer)
+
         print(f'{winner.name} is the Winner!\n')
         if player.black_jack == True or dealer.black_jack == True:
             print('BLACK JACK!!!')
@@ -376,6 +381,6 @@ class View:
         pass
 
 
-
+#
 controller = Controller()
 controller.init_game()
