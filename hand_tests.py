@@ -23,40 +23,40 @@ class TestGame(unittest.TestCase):
     #     del card
 
     #hand returns total
-    def test_hand_total(self):
-        hand = Hand()
-        card = Card(suit='Hearts',value=10,face='Jack')
-        hand.cards.append(card)
-        hand.cards.append(card)
-        hand.cards.append(card)
-        self.assertEqual(hand.total(),30)
-        del hand
-        del card
-
-
-    #hand busted
-    # def test_hand_busted(self):
+    # def test_hand_total(self):
     #     hand = Hand()
     #     card = Card(suit='Hearts',value=10,face='Jack')
     #     hand.cards.append(card)
     #     hand.cards.append(card)
     #     hand.cards.append(card)
-    #     self.assertEqual(hand.busted(),True)
+    #     self.assertEqual(hand.total(),30)
     #     del hand
     #     del card
 
+
+    #hand busted
+    def test_hand_busted(self):
+        hand = Hand()
+        card = Card(suit='Hearts',value=10,face='Jack')
+        hand.cards.append(card)
+        hand.cards.append(card)
+        hand.cards.append(card)
+        self.assertEqual(hand.busted(),True)
+        del hand
+        del card
+
     #hand is black jack
-    # def test_hand_black_jack(self):
-    #     hand = Hand()
-    #     jack = Card(suit='Hearts',value=10,face='Jack')
-    #     nine = Card(suit='Hearts',value=9,face='9')
-    #     two = Card(suit='Hearts',value=2,face='2')
-    #     ace = Card(suit='Hearts',value=(1,11),face='Ace')
-    #     hand.cards.append(jack)
-    #     hand.cards.append(ace)
-    #     # hand.cards.append(two)
-    #     self.assertEqual(hand.black_jack(),True)
-    #     del hand
+    def test_hand_black_jack(self):
+        hand = Hand()
+        jack = Card(suit='Hearts',value=10,face='Jack')
+        nine = Card(suit='Hearts',value=9,face='9')
+        two = Card(suit='Hearts',value=2,face='2')
+        ace = Card(suit='Hearts',value=(1,11),face='Ace')
+        hand.cards.append(jack)
+        hand.cards.append(ace)
+        # hand.cards.append(two)
+        self.assertEqual(hand.black_jack(),True)
+        del hand
 
 
 

@@ -11,75 +11,72 @@ class Card:
 class Hand:
     def __init__(self):
         self.cards = []
+        self.total = 0
 
     def add_cards(self,new_cards):
         self.cards += new_cards
 
-    def card_is_ace(self,card):
-        return card.face == 'Ace'
+    def get_total(self):
+        total_options = self.iterate_through_cards()
+        if self.hand_has_ace() == False:
+            self.total = total_options[1]
+        else:
+            self.total = self.ace_score_options(total_options)
 
-    def has_ace(self):
+    #IF THE 11 OPTION IS BUSTED RETURN THE 1 OPTION
+    #IF THE 11 OPTION IS NOT BUSTED RETURN THE 11 OPTION
+    def ace_score_options(self,total_options):
+        if total_options[1] > 21:
+            return total_options[0]
+        else:
+            return total_options[1]
+
+    def hand_has_ace(self):
         for card in self.cards:
-          if self.card_is_ace(card) == True:
+          if self.is_ace(card) == True:
               return True
         return False
 
-
-    def add_card_total(self,card,total):
-        if self.card_is_ace(card) == True:
-          x,y = card.value
-          total[0] += x
-          total[1] += y
-        else:
-          total[0] += card.value
-          total[1] += card.value
-        return total
+    def is_ace(self,card):
+        return card.face == 'Ace'
 
     def iterate_through_cards(self):
-        total = [0,0]
+        total_options = [0,0]
         for card in self.cards:
-          total = self.add_card_total(card,total)
-        return total
+          total_options = self.add_hand_total(card,total_options)
+        return total_options
 
-
-    # def iterate_through_cards(self):
-    #     total = [0,0]
-    #     for card in self.cards:
-    #       if self.card_is_ace(card) == True:
-    #         x,y = card.value
-    #         total[0] += x
-    #         total[1] += y
-    #       else:
-    #         total[0] += card.value
-    #         total[1] += card.value
-    #     return total
-
-    def total(self):
-        total = self.iterate_through_cards()
-        if self.has_ace() == False:
-            return total[1]
+    def add_hand_total(self,card,total_options):
+        if self.is_ace(card) == True:
+            self.card_is_ace(card,total_options)
         else:
-            #IF THE 11 OPTION IS BUSTED RETURN THE 1 OPTION
-            if total[1] > 21:
-              return total[0]
-            else:
-              return total[1]
-            #IF THE 11 OPTION IS NOT BUSTED RETURN THE 11 OPTION
+            self.card_not_ace(card,total_options)
+        return total_options
+
+    def card_is_ace(self,card,total_options):
+        x,y = card.value
+        total_options[0] += x
+        total_options[1] += y
+        return total_options
+
+    def card_not_ace(self,card,total_options):
+        total_options[0] += card.value
+        total_options[1] += card.value
+        return total_options
 
     def clear(self):
         self.cards = []
 
     def busted(self):
-        return self.total() > 21
+        self.get_total()
+        return self.total > 21
 
     def black_jack(self):
-        return self.total() == 21
-
+        self.get_total()
+        return self.total == 21
 
     def __del__(self):
         self.cards = []
-
-
 
 
 
@@ -396,5 +393,5 @@ class View:
 
 
 #
-controller = Controller()
-controller.init_game()
+# controller = Controller()
+# controller.init_game()
