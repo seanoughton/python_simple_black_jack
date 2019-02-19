@@ -264,7 +264,6 @@ class Controller:
         self.player = Player()
         self.dealer = Dealer()
         self.view = View()
-        self.play = True
 
         self.player.create_bank(2500)
 
@@ -337,11 +336,11 @@ class View:
 
     def display_hand(self,player):
         if player.name == 'Player':
-            response = f'Your hand is: \n'
+            response = f'Your Hand is: \n'
             for card in player.hand.cards:
                 response += f" {card.face} of {card.suit}\n"
         else:
-            response = f"The Dealer's: \n"
+            response = f"The Dealer's Hand is: \n"
             for card in player.hand.cards:
                 response += f" {card.face} of {card.suit}\n"
 
@@ -375,7 +374,6 @@ class View:
 
     def __del__(self):
         pass
-
 
 
 
