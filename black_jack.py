@@ -64,9 +64,6 @@ class Hand:
         total_options[1] += card.value
         return total_options
 
-    def clear(self):
-        self.cards = []
-
     def busted(self):
         self.get_total()
         return self.total > 21
@@ -74,6 +71,9 @@ class Hand:
     def black_jack(self):
         self.get_total()
         return self.total == 21
+
+    def clear(self):
+        self.cards = []
 
     def __del__(self):
         self.cards = []
@@ -83,21 +83,35 @@ class Hand:
 class Deck:
     def __init__(self):
         self.cards = []
+        self.suits = ['Spades','Hearts','Diamonds','Clubs']
+        self.faces = ['Jack','Queen','King','Ace']
 
     def add_cards(self):
-        suits = ['Spades','Hearts','Diamonds','Clubs']
-        face_cards = ['Jack','Queen','King','Ace']
-        for suit in suits:
-          for i in range(2,11):
-            card = Card(suit=suit,value=i,face=i)
-            self.cards.append(card)
-          for card in face_cards:
-            if card == 'Ace':
-              card = Card(suit=suit,value=(1,11),face=card)
-            else:
-              card = Card(suit=suit,value=10,face=card)
-            self.cards.append(card)
+        self.iterate_through_suits()
+        self.shuffle_deck()
+
+    def shuffle_deck(self):
         random.shuffle(self.cards)
+
+    def iterate_through_suits(self):
+        for suit in self.suits:
+            self.add_non_face_cards(suit)
+            self.add_face_cards(suit)
+
+    def add_non_face_cards(self,suit):
+      for i in range(2,11):
+        card = Card(suit=suit,value=i,face=i)
+        self.cards.append(card)
+
+    def add_face_cards(self,suit):
+        for face in self.faces:
+          self.cards.append(self.test_face(face,suit))
+
+    def test_face(self,face,suit):
+        if face == 'Ace':
+          return Card(suit=suit,value=(1,11),face=face)
+        else:
+          return Card(suit=suit,value=10,face=face)
 
     def cards_out(self,num):
         cards = []
@@ -207,6 +221,21 @@ class Game:
 
     def player_play(self,view,player,dealer):
         response = view.hit()
+        self.hit_until_stay(view,player,dealer)
+        # while response == True:
+        #     player_cards = dealer.deal_cards(1,self.deck)
+        #     player.hand.add_cards(player_cards)
+        #
+        #     if self.game_over(view,player,dealer) == True:
+        #         break
+        #     else:
+        #         view.display_hand(player)
+        #
+        #     response = view.hit()
+
+        self.turn = "Dealer"
+
+    def hit_until_stay(self,view,player,dealer):
         while response == True:
             player_cards = dealer.deal_cards(1,self.deck)
             player.hand.add_cards(player_cards)
@@ -215,10 +244,8 @@ class Game:
                 break
             else:
                 view.display_hand(player)
-
             response = view.hit()
 
-        self.turn = "Dealer"
 
     def dealer_play(self,view,player,dealer):
         while dealer.hand.total() < 21:
